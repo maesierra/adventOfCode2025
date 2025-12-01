@@ -51,7 +51,7 @@ public abstract class Runner {
             if (input == null) {
                 System.err.println("input_%s not found".formatted(day));
             }
-            Runner.Solution solution = (Runner.Solution) Class.forName("net.maesierra.adventOfCode2024.solutions.day%s.Day%s".formatted(day, day)).getDeclaredConstructor().newInstance();
+            Runner.Solution solution = (Runner.Solution) Class.forName("net.maesierra.adventOfCode2025.solutions.day%s.Day%s".formatted(day, day)).getDeclaredConstructor().newInstance();
             runWithInput.accept(new RunData(solution, day, part), input);
         }
 
