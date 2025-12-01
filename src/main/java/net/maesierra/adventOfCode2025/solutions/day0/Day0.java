@@ -1,0 +1,20 @@
+package net.maesierra.adventOfCode2025.solutions.day0;
+
+import net.maesierra.adventOfCode2025.Runner;
+
+import java.io.InputStream;
+
+import static net.maesierra.adventOfCode2025.utils.IOHelper.inputAsString;
+
+public class Day0 implements Runner.Solution {
+
+    @Override
+    public String part1(InputStream input, String... params) {
+        return inputAsString(input).toUpperCase();
+    }
+
+    @Override
+    public String part2(InputStream input, String... params) {
+        return inputAsString(input).toLowerCase();
+    }
+}
