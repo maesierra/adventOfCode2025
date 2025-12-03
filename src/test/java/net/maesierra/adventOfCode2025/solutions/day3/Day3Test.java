@@ -11,13 +11,13 @@ class Day3Test {
 
     @Test
     void  testPart1() {
-        String expected = "161";
+        String expected = "357";
         assertThat(part1(new Day3(), "input_3"), equalTo(expected));
     }
 
     @Test
     void  testPart2() {
-        String expected = "48";
-        assertThat(part2(new Day3(), "input_3_2"), equalTo(expected));
+        String expected = "3121910778619";
+        assertThat(part2(new Day3(), "input_3"), equalTo(expected));
     }
 }
