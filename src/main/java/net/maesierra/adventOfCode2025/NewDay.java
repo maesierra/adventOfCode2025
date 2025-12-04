@@ -13,10 +13,10 @@ import static org.apache.commons.io.filefilter.TrueFileFilter.TRUE;
 public class NewDay {
 
     public static void main(String[] args) throws Exception {
-        Path currentDir = Paths.get("./src/main/java/net/maesierra/adventOfCode2024/solutions").toAbsolutePath().normalize();
-        Path baseSolution = Paths.get("./src/main/java/net/maesierra/adventOfCode2024/solutions/day0/Day0.java").toAbsolutePath().normalize();
-        Path testDir = Paths.get("./src/test/java/net/maesierra/adventOfCode2024/solutions").toAbsolutePath().normalize();
-        Path test = Paths.get("./src/test/java/net/maesierra/adventOfCode2024/solutions/day0/Day0Test.java").toAbsolutePath().normalize();
+        Path currentDir = Paths.get("./src/main/java/net/maesierra/adventOfCode2025/solutions").toAbsolutePath().normalize();
+        Path baseSolution = Paths.get("./src/main/java/net/maesierra/adventOfCode2025/solutions/day0/Day0.java").toAbsolutePath().normalize();
+        Path testDir = Paths.get("./src/test/java/net/maesierra/adventOfCode2025/solutions").toAbsolutePath().normalize();
+        Path test = Paths.get("./src/test/java/net/maesierra/adventOfCode2025/solutions/day0/Day0Test.java").toAbsolutePath().normalize();
         Integer newDay = FileUtils.listFilesAndDirs(currentDir.toFile(), FALSE, TRUE)
                 .stream().filter(f -> f.getName().startsWith("day"))
                 .map(f -> Integer.parseInt(f.getName().replace("day", "")))

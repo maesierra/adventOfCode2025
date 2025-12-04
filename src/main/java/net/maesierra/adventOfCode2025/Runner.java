@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,14 +18,21 @@ public abstract class Runner {
     public static final Pattern DAY_PATTERN = Pattern.compile("^day(\\d+)");
     public static final Pattern PART_PATTERN = Pattern.compile("^part([12])$");
 
+    public record VisualiseProperties(int speed, int width, int height) {
+
+    }
+
     public interface Solution {
         String part1(InputStream input, String...params);
         String part2(InputStream input, String...params);
-        default Consumer<Graphics2D> visualisePart1(InputStream input, String...params) {
-            return c -> {};
+        default Function<Graphics2D, Boolean> visualisePart1(InputStream input, String...params) {
+            return c -> false;
         }
-        default Consumer<Graphics2D> visualisePart2(InputStream input, String...params) {
-            return c -> {};
+        default Function<Graphics2D, Boolean> visualisePart2(InputStream input, String...params) {
+            return c -> false;
+        }
+        default VisualiseProperties visualiseProperties() {
+            return new VisualiseProperties(500, 2000, 1800);
         }
     }
 
