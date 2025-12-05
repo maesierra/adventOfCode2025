@@ -14,8 +14,8 @@ public class Logger {
 
     public static void info(String message, Object... params) {
         switch (level) {
-            case INFO -> System.out.println(message.formatted(params));
-            case DEBUG, NONE -> {}
+            case INFO, DEBUG -> System.out.println(message.formatted(params));
+            case NONE -> {}
         }
     }
     public static void debug(String message, Object... params) {
