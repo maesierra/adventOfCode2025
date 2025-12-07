@@ -23,6 +23,4 @@ public class TestHelper {
     public static String part2(Runner.Solution solution, String name, String...params) {
         return runWithInput(name, (input) -> solution.part2(input, params));
     }
-
-
 }

@@ -269,6 +269,11 @@ public class Matrix<T> {
         return rows.get(row);
     }
 
+    public Row<T> lastRow() {
+        return rows.getLast();
+    }
+
+
 
 
     public int nRows() {
