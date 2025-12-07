@@ -1,7 +1,7 @@
 package net.maesierra.adventOfCode2025.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -9,45 +9,68 @@ import java.util.stream.Stream;
 
 public class Matrix<T> {
 
-    public static class Row<T> {
+    public static class ItemList<T> {
         private final int n;
-        private final List<T> row;
+        private final List<T> items;
         private final Matrix<T> matrix;
-        private final List<Item<T>> items;
+        private final List<Item<T>> itemList;
 
-        public Row(int n, List<T> row, Matrix<T> matrix) {
+        public ItemList(int n, List<T> itemList, BiFunction<Integer, Integer, Position> transpose, Matrix<T> matrix) {
             this.n = n;
-            this.row = row;
+            this.items = itemList;
             this.matrix = matrix;
-            this.items = row.stream()
+            this.itemList = itemList.stream()
                     .reduce(
                             new ArrayList<>(),
-                            (items, i) -> {
-                                items.add(new Item<>(this.n, items.size(), i, this.matrix));
-                                return items;
+                            (list, i) -> {
+                                Position pos = transpose.apply(this.n, list.size());
+                                list.add(new Item<>(pos.row(), pos.col(), i, this.matrix));
+                                return list;
                             },
                             (a, b) -> a);
 
         }
 
-        public List<Item<T>> items() {
-            return items;
+        public List<Item<T>> itemList() {
+            return itemList;
         }
 
         public int n() {
             return n;
         }
 
-        public List<T> row() {
-            return row;
+        public List<T> items() {
+            return items;
         }
 
         public Matrix<T> matrix() {
             return matrix;
         }
         public Item<T> at(int col) {
-            return items.get(col);
+            return itemList.get(col);
         }
+    }
+
+    public static class Row<T> extends ItemList<T>{
+
+        public Row(int n, List<T> row, Matrix<T> matrix) {
+            super(n, row, Position::new, matrix);
+        }
+        public List<T> row() {
+            return items();
+        }
+
+    }
+
+    public static class Column<T> extends ItemList<T>{
+
+        public Column(int n, List<T> column, Matrix<T> matrix) {
+            super(n, column, (r, c) -> new Position(c, r), matrix);
+        }
+        public List<T> column() {
+            return items();
+        }
+
     }
 
     public record Item<T>(int row, int column, T value, Matrix<T> matrix)  {
@@ -232,6 +255,14 @@ public class Matrix<T> {
     public Stream<Row<T>> rows() {
         return rows.stream();
     }
+    public Stream<Column<T>> columns() {
+        Map<Integer, List<Item<T>>> columns = new TreeMap<>();
+        items().forEach(item -> {
+            columns.computeIfAbsent(item.column(), k -> new ArrayList<>()).add(item);
+        });
+        return columns.entrySet().stream().map(entry -> new Column<>(entry.getKey(), entry.getValue().stream().map(Item::value).toList(), this));
+    }
+
 
 
     public Row<T> row(int row) {
@@ -249,7 +280,7 @@ public class Matrix<T> {
     }
 
     public Stream<Item<T>> items() {
-        return rows.stream().flatMap(r -> r.items().stream());
+        return rows.stream().flatMap(r -> r.itemList().stream());
     }
 
     public boolean isIn(int row, int col) {
@@ -261,7 +292,7 @@ public class Matrix<T> {
 
     public <T2> Matrix<T2> map(Function<Item<T>, T2> mapper) {
         return new Matrix<>(this.rows()
-                .map(r -> r.items().stream().map(mapper).toList())
+                .map(r -> r.itemList().stream().map(mapper).toList())
         );
     }
 
@@ -270,7 +301,7 @@ public class Matrix<T> {
     }
     public String toString(Function<Item<T>, String> formatter) {
         return this.rows().map(r -> {
-                    return r.items().stream().map(formatter).collect(Collectors.joining());
+                    return r.itemList().stream().map(formatter).collect(Collectors.joining());
                 })
                 .collect(Collectors.joining("\n"));
     }
