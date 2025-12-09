@@ -11,14 +11,11 @@ class Day8Test {
 
     @Test
     void  testPart1() {
-        assertThat(part1(new Day8(), "input_8.1"), equalTo("2"));
-        assertThat(part1(new Day8(), "input_8.2"), equalTo("4"));
-        assertThat(part1(new Day8(), "input_8"), equalTo("14"));
+        assertThat(part1(new Day8(), "input_8", "10"), equalTo("40"));
     }
 
     @Test
     void  testPart2() {
-        assertThat(part2(new Day8(), "input_8.3"), equalTo("9"));
-        assertThat(part2(new Day8(), "input_8"), equalTo("34"));
+        assertThat(part2(new Day8(), "input_8"), equalTo("25272"));
     }
 }

@@ -2,7 +2,7 @@
   <configuration default="false" name="Main P1 (Debug)" type="Application" factoryName="Application" folderName="Runners">
     <option name="MAIN_CLASS_NAME" value="net.maesierra.adventOfCode2025.Main" />
     <module name="advent-of-code-2024" />
-    <option name="PROGRAM_PARAMETERS" value="day5 part1" />
+    <option name="PROGRAM_PARAMETERS" value="day8 part1" />
     <option name="VM_PARAMETERS" value="-Ddebug=true" />
     <extension name="coverage">
       <pattern>
