@@ -247,6 +247,20 @@ public class Matrix<T> {
             this.nCols = 0;
         }
     }
+
+    public Matrix(int nRows, int nCols, Supplier<T> defaultValue) {
+        this.rows = new ArrayList<>();
+        for (int i = 0; i < nRows; i++) {
+            List<T> values = new ArrayList<>();
+            for (int j = 0; j < nCols; j++) {
+                values.add(defaultValue.get());
+            }
+            rows.add(new Row<>(i, values, this));
+        }
+        this.nRows = nRows;
+        this.nCols = nCols;
+    }
+
     public Matrix(Matrix<T> other) {
         this.rows = other.rows;
         this.nRows = other.nRows;

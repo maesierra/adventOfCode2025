@@ -2,7 +2,7 @@
   <configuration default="false" name="Visualise P2" type="Application" factoryName="Application" folderName="Runners">
     <option name="MAIN_CLASS_NAME" value="net.maesierra.adventOfCode2025.Visualise" />
     <module name="advent-of-code-2024" />
-    <option name="PROGRAM_PARAMETERS" value="day4 part2" />
+    <option name="PROGRAM_PARAMETERS" value="day9 part2" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="net.maesierra.adventOfCode2025.*" />
