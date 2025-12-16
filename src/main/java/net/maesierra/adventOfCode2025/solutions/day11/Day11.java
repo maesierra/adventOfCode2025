@@ -1,8 +1,7 @@
 package net.maesierra.adventOfCode2025.solutions.day11;
 
 import net.maesierra.adventOfCode2025.Runner;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import net.maesierra.adventOfCode2025.utils.Logger;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -12,81 +11,91 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static net.maesierra.adventOfCode2025.utils.IOHelper.inputAsStream;
+import static net.maesierra.adventOfCode2025.utils.Logger.debug;
 
 public class Day11 implements Runner.Solution {
 
     private static class ServerRack {
         private final Map<String, Set<String>> connectionMap;
-        private final Map<Pair<String, String>, Long> cache = new HashMap<>();
-        private final Map<CacheKey, Long> cache2 = new HashMap<>();
+        private final Map<CacheKey, FindPathsResult> cache = new HashMap<>();
 
-        record CacheKey(String from, String to, Set<String> visited) {
+        record CacheKey(String from, String to) {
 
         }
+
+        record FindPathsResult(long valid, long dac, long fft, long none) {
+
+            long all() {
+                return valid + dac + fft + none;
+            }
+        }
+
 
         public ServerRack(Map<String, Set<String>> connectionMap) {
             this.connectionMap = connectionMap;
         }
 
-        private long findPaths(String from, String to, Set<String> visited, Set<String> using) {
-            visited = new HashSet<>(visited);
-            visited.add(from);
-            Pair<String, String> pair = Pair.of(from, to);
-            if (from.equals(to)) {
-                //return using.isEmpty() || visited.containsAll(using) ? 1 : 0;
-                return 1;
-            }
-            if (from.equals("out")) {
-                return 0;
-            }
-            if (cache.containsKey(pair)) {
-                return cache.get(pair);
-            }
-            long paths = 0;
-            Set<String> destinations = connectionMap.get(from);
-            for (var connection: destinations) {
-                if (!visited.contains(connection)) {
-                    paths += findPaths(connection, to, visited, using);
-                }
-            }
-            cache.put(pair, paths);
-            return paths;
+        CacheKey cacheKey(String from, String to) {
+            return new CacheKey(from, to);
         }
-        private long findPaths(String from, String to, Set<String> visited) {
+
+
+        private FindPathsResult findPaths(String from, String to, Set<String> visited) {
             visited = new HashSet<>(visited);
             visited.add(from);
-            Pair<String, String> pair = Pair.of(from, to);
+            CacheKey cacheKey = cacheKey(from, to);
+            boolean dac = from.equals("dac");
+            boolean fft = from.equals("fft");
             if (from.equals(to)) {
-                return 1;
+                return new FindPathsResult(0, 0, 0, 1);
             }
-            if (from.equals("out")) {
-                return 0;
+            if (cache.containsKey(cacheKey)) {
+                debug("Cache used for %s -> %s".formatted(from, to));
+                return cache.get(cacheKey);
             }
-            if (cache.containsKey(pair)) {
-                return cache.get(pair);
-            }
-            long paths = 0;
+            long validPaths = 0;
+            long dacPaths = 0;
+            long fftPaths = 0;
+            long nonePaths = 0;
             Set<String> destinations = connectionMap.get(from);
-            for (var connection: destinations) {
+            for (var connection : destinations) {
                 if (!visited.contains(connection)) {
-                    paths += findPaths(connection, to, visited);
+                    FindPathsResult res = findPaths(connection, to, visited);
+                    validPaths += res.valid;
+                    if (dac) {
+                        validPaths += res.fft; //All the fft paths become valid
+                        dacPaths += res.dac; //dac paths stay the same
+                        dacPaths += res.none; //none path become dac
+                    } else if (fft) {
+                        validPaths += res.dac; //All the dac paths become valid
+                        fftPaths += res.fft;
+                        fftPaths += res.none;
+                    } else {
+                        dacPaths += res.dac;
+                        fftPaths += res.fft;
+                        nonePaths += res.none;
+                    }
                 }
             }
-            //cache.put(pair, paths);
-            return paths;
+            FindPathsResult result = new FindPathsResult(validPaths, dacPaths, fftPaths, nonePaths);
+            cache.put(cacheKey, result);
+            return result;
         }
     }
 
     @Override
     public String part1(InputStream input, String... params) {
         ServerRack serverRack = parseInput(input);
-        return Long.toString(serverRack.findPaths("you", "out", new HashSet<>()));
+        var result = serverRack.findPaths("you", "out", Set.of());
+        return Long.toString(result.all());
     }
 
     @Override
     public String part2(InputStream input, String... params) {
         ServerRack serverRack = parseInput(input);
-        return Long.toString(serverRack.findPaths("svr", "out", new HashSet<>(), Set.of("fft", "dac")));
+        var result = serverRack.findPaths("svr", "out", Set.of());
+        Logger.info(result.toString());
+        return Long.toString(result.valid());
     }
 
     private static ServerRack parseInput(InputStream input) {
