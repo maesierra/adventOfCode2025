@@ -242,7 +242,7 @@ public class Matrix<T> {
         }, (a, b) -> a);
         this.nRows = this.rows.size();
         if (this.nRows > 0) {
-            this.nCols = this.rows.get(0).row().size();
+            this.nCols = this.rows.getFirst().row().size();
         } else {
             this.nCols = 0;
         }

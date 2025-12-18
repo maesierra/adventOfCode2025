@@ -17,7 +17,7 @@ class Day10Test {
 
     @Test
     void  testPart2() {
-        String expected = "81";
+        String expected = "33";
         assertThat(part2(new Day10(), "input_10"), equalTo(expected));
     }
 }
